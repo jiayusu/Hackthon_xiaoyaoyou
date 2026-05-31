@@ -10,8 +10,6 @@
 
 ## 📺 产品演示
 
-https://github.com/user-attachments/assets/6af1cef3-89e0-432c-8af4-5780c9a01c18
-
 <video src="https://raw.githubusercontent.com/jiayusu/Hackthon_xiaoyaoyou/master/拾遗补阙_小程序.mp4" controls width="100%" poster="logo/logo.png"></video>
 
 ---
