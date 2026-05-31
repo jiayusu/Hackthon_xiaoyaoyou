@@ -1,0 +1,14 @@
+# 敏感配置文件（包含 API Key）
+utils/config.js
+
+# 微信开发者工具私有配置
+project.private.config.json
+
+# 上传目录
+.uploads/
+
+# 依赖
+node_modules/
+
+# 日志
+*.log

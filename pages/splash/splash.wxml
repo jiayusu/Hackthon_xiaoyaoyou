@@ -1,0 +1,7 @@
+<!-- splash.wxml - 开屏动画页 -->
+<view class="splash-container">
+  <view class="splash-content {{animationState}}">
+    <image class="splash-logo" src="/logo/logo.png" mode="aspectFit"></image>
+    <text class="splash-title">拾遗补阙</text>
+  </view>
+</view>

@@ -1,0 +1,272 @@
+<!-- main.wxml - 主页面（相关/历史记录/洞察） -->
+<view class="main-page" style="padding-top: {{statusBarHeight + 10}}px;">
+
+  <!-- ========== 顶部栏 ========== -->
+  <view class="top-bar">
+    <view class="top-bar-logo">
+      <image class="top-bar-logo-img" src="/logo/logo.png" mode="aspectFit"></image>
+    </view>
+    <view class="top-bar-tabs">
+      <view
+        wx:for="{{tabs}}"
+        wx:key="index"
+        class="top-bar-tab {{activeTab === index ? 'active' : ''}}"
+        data-index="{{index}}"
+        bindtap="onTabTap"
+      >
+        {{item}}
+        <!-- 洞察后台生成中指示器 -->
+        <view class="tab-generating-dot" wx:if="{{index === 2 && insightTaskActive && activeTab !== 2}}"></view>
+      </view>
+    </view>
+  </view>
+
+  <!-- ========== 收藏提示 ========== -->
+  <view class="fav-toast {{showFavToast ? 'show' : ''}}">
+    <image class="fav-toast-icon" src="/icons/star-filled.svg" mode="aspectFit"></image>
+    <text class="fav-toast-text">您已收藏~</text>
+  </view>
+
+  <!-- ========== 内容区域 ========== -->
+  <view class="main-content">
+
+    <!-- ==== 相关页 ==== -->
+    <view class="tab-content" hidden="{{activeTab !== 0}}">
+      <scroll-view
+        class="waterfall-scroll"
+        scroll-y
+        enable-passive
+        show-scrollbar="{{false}}"
+        bindscrolltolower="onScrollToLower"
+        bindscrolltoupper="onScrollToUpper"
+        lower-threshold="300"
+        upper-threshold="50"
+      >
+        <!-- 顶部刷新指示器（仅在刷新时显示） -->
+        <view class="top-refresh-indicator" wx:if="{{isTopRefreshing}}">
+          <view class="top-refresh-spin spinning"></view>
+          <text class="top-refresh-text">释放刷新…</text>
+        </view>
+
+        <!-- 瀑布流两列 -->
+        <view class="waterfall-container">
+          <!-- 左列 -->
+          <view class="waterfall-column">
+            <block wx:for="{{leftCards}}" wx:key="id">
+              <view class="card-item" bindtap="onCardTap" data-card="{{item}}">
+                <image class="card-item-image" src="{{item.image}}" mode="widthFix"></image>
+                <view class="card-item-info">
+                  <text class="card-item-title">{{item.title}}</text>
+                  <view class="card-item-star {{item._isFav ? 'active' : ''}}" catchtap="onCardFavorite" data-card="{{item}}">
+                    <image wx:if="{{item._isFav}}" class="card-item-star-icon" src="/icons/star-filled.svg" mode="aspectFit"></image>
+                    <image wx:else class="card-item-star-icon" src="/icons/star.svg" mode="aspectFit"></image>
+                  </view>
+                </view>
+              </view>
+            </block>
+          </view>
+          <!-- 右列 -->
+          <view class="waterfall-column">
+            <block wx:for="{{rightCards}}" wx:key="id">
+              <view class="card-item" bindtap="onCardTap" data-card="{{item}}">
+                <image class="card-item-image" src="{{item.image}}" mode="widthFix"></image>
+                <view class="card-item-info">
+                  <text class="card-item-title">{{item.title}}</text>
+                  <view class="card-item-star {{item._isFav ? 'active' : ''}}" catchtap="onCardFavorite" data-card="{{item}}">
+                    <image wx:if="{{item._isFav}}" class="card-item-star-icon" src="/icons/star-filled.svg" mode="aspectFit"></image>
+                    <image wx:else class="card-item-star-icon" src="/icons/star.svg" mode="aspectFit"></image>
+                  </view>
+                </view>
+              </view>
+            </block>
+          </view>
+        </view>
+
+        <!-- 加载更多 -->
+        <view class="load-more" wx:if="{{isRefreshing}}">
+          <view class="load-more-spin"></view>
+          <text class="load-more-text">生成更多卡片…</text>
+        </view>
+        <view class="load-more" wx:if="{{!hasMoreCards && leftCards.length > 0 && !isRefreshing}}">
+          <text class="load-more-text">— 已经到底啦 —</text>
+        </view>
+
+        <!-- 空状态 -->
+        <view class="empty-state" wx:if="{{leftCards.length === 0 && rightCards.length === 0 && !isRefreshing}}">
+          <image class="empty-state-icon" src="/icons/inbox.svg" mode="aspectFit"></image>
+          <text class="empty-state-text">还没有相关卡片</text>
+          <text class="empty-state-sub">点击下方按钮上传资源</text>
+        </view>
+
+        <view style="height: 160rpx;"></view>
+      </scroll-view>
+    </view>
+
+    <!-- ==== 历史记录页 ==== -->
+    <view class="tab-content" hidden="{{activeTab !== 1}}">
+      <scroll-view class="waterfall-scroll" scroll-y enable-passive show-scrollbar="{{false}}">
+        <view class="waterfall-container">
+          <view class="waterfall-column">
+            <block wx:for="{{historyLeftCards}}" wx:key="id">
+              <view class="card-item" bindtap="onHistoryCardTap" data-card="{{item}}">
+                <image class="card-item-image" src="{{item.image}}" mode="widthFix"></image>
+                <view class="card-item-info">
+                  <view class="card-item-info-text">
+                    <text class="card-item-title">{{item.title}}</text>
+                    <text class="card-item-time">{{item.time}}</text>
+                  </view>
+                </view>
+              </view>
+            </block>
+          </view>
+          <view class="waterfall-column">
+            <block wx:for="{{historyRightCards}}" wx:key="id">
+              <view class="card-item" bindtap="onHistoryCardTap" data-card="{{item}}">
+                <image class="card-item-image" src="{{item.image}}" mode="widthFix"></image>
+                <view class="card-item-info">
+                  <view class="card-item-info-text">
+                    <text class="card-item-title">{{item.title}}</text>
+                    <text class="card-item-time">{{item.time}}</text>
+                  </view>
+                </view>
+              </view>
+            </block>
+          </view>
+        </view>
+
+        <view class="empty-state" wx:if="{{historyLeftCards.length === 0 && historyRightCards.length === 0}}">
+          <image class="empty-state-icon" src="/icons/file-text.svg" mode="aspectFit"></image>
+          <text class="empty-state-text">还没有历史记录</text>
+          <text class="empty-state-sub">上传资源后将自动保存</text>
+        </view>
+
+        <view style="height: 160rpx;"></view>
+      </scroll-view>
+    </view>
+
+    <!-- ==== 洞察页 ==== -->
+    <view class="tab-content" hidden="{{activeTab !== 2}}">
+      <!-- 洞察历史按钮 -->
+      <view class="insight-header">
+        <view class="insight-history-btn" bindtap="onOpenInsightHistory">
+          <image class="insight-history-icon" src="/icons/history.svg" mode="aspectFit"></image>
+          <text class="insight-history-text">对话历史</text>
+        </view>
+      </view>
+
+      <scroll-view class="insight-scroll" scroll-y enable-passive show-scrollbar="{{false}}">
+        <view class="insight-content">
+          <!-- 初始状态：显示生成按钮 -->
+          <view class="insight-empty" wx:if="{{!insightText && !insightLoading}}">
+            <text class="insight-empty-title">🔍 深度洞察</text>
+            <text class="insight-empty-desc">基于您收藏的卡片，AI 将深度分析您的认知模式和思维特征，揭示碎片背后的隐秘脉络。</text>
+            <view class="insight-generate-btn" bindtap="onGenerateInsight">
+              <text class="insight-generate-btn-text">✨ 生成洞察</text>
+            </view>
+          </view>
+
+          <!-- 加载中 -->
+          <view class="insight-loading" wx:if="{{insightLoading}}">
+            <view class="load-more-spin"></view>
+            <text class="load-more-text">正在生成洞察…</text>
+          </view>
+
+          <!-- 流式生成中：实时 Markdown 渲染 -->
+          <view class="insight-streaming-container" wx:if="{{insightText && insightStreaming}}">
+            <rich-text class="insight-text-md streaming" nodes="{{insightContentNodes}}"></rich-text>
+            <!-- 光标动画 -->
+            <text class="insight-cursor inline">|</text>
+          </view>
+
+          <!-- 完成后：Markdown 渲染 -->
+          <rich-text class="insight-text-md" nodes="{{insightContentNodes}}" wx:if="{{insightText && !insightStreaming}}"></rich-text>
+        </view>
+        <view style="height: 160rpx;"></view>
+      </scroll-view>
+    </view>
+
+  </view>
+
+  <!-- ========== 卡片详情弹窗 ========== -->
+  <view class="card-detail-overlay {{showCardDetail ? 'show' : ''}}" wx:if="{{showCardDetail}}" bindtap="onCardDetailOverlayTap">
+    <view class="card-detail-panel" catchtap="stopPropagation">
+      <!-- 大图 -->
+      <scroll-view class="card-detail-scroll" scroll-y show-scrollbar="{{false}}">
+        <image class="card-detail-image" src="{{detailImage}}" mode="widthFix" binderror="onDetailImageError"></image>
+
+        <!-- 详细文字 -->
+        <view class="card-detail-text">
+          <text class="card-detail-title">{{detailCard.title}}</text>
+          <rich-text class="card-detail-body-md" nodes="{{detailContentNodes}}"></rich-text>
+        </view>
+
+        <!-- 笔记列表 -->
+        <view class="card-detail-notes" wx:if="{{detailNotes.length > 0}}">
+          <text class="card-detail-notes-title">笔 记</text>
+          <block wx:for="{{detailNotes}}" wx:key="index">
+            <view class="card-detail-note-item">
+              <text class="card-detail-note-content">{{item.content}}</text>
+              <text class="card-detail-note-time">{{item.time}}</text>
+            </view>
+          </block>
+        </view>
+
+        <view style="height: 140rpx;"></view>
+      </scroll-view>
+
+      <!-- 底部笔记输入栏 -->
+      <view class="card-detail-input-bar">
+        <input
+          class="card-detail-input"
+          placeholder="写下你的想法…"
+          value="{{currentNote}}"
+          bindinput="onNoteInput"
+          confirm-type="send"
+          bindconfirm="onSendNote"
+        />
+        <view class="card-detail-send-btn {{currentNote ? 'active' : ''}}" bindtap="onSendNote">
+          <image class="card-detail-send-icon" src="/icons/right.svg" mode="aspectFit"></image>
+        </view>
+      </view>
+
+      <!-- 收藏星号 -->
+      <view class="card-detail-fav {{isFavorited ? 'active' : ''}}" bindtap="onToggleFavorite" catchtap="onToggleFavorite">
+        <image wx:if="{{isFavorited}}" class="card-detail-fav-icon" src="/icons/star-filled.svg" mode="aspectFit"></image>
+        <image wx:else class="card-detail-fav-icon" src="/icons/star.svg" mode="aspectFit"></image>
+      </view>
+    </view>
+  </view>
+
+  <!-- ========== 洞察历史弹窗 ========== -->
+  <view class="insight-history-overlay {{showInsightHistory ? 'show' : ''}}" wx:if="{{showInsightHistory}}" bindtap="onCloseInsightHistory">
+    <view class="insight-history-panel" catchtap="stopPropagation">
+      <view class="insight-history-header">
+        <text class="insight-history-title">对话历史</text>
+        <view class="insight-history-close" bindtap="onCloseInsightHistory">
+          <image class="insight-history-close-icon" src="/icons/close.svg" mode="aspectFit"></image>
+        </view>
+      </view>
+      <scroll-view class="insight-history-list" scroll-y show-scrollbar="{{false}}">
+        <block wx:for="{{insightHistoryList}}" wx:key="id">
+          <view class="insight-history-item" bindtap="onInsightHistoryTap" data-insight="{{item}}">
+            <text class="insight-history-item-time">{{item.time}}</text>
+            <text class="insight-history-item-preview">{{item.text}}</text>
+            <text class="insight-history-item-count">基于{{item.cardCount}}个收藏生成</text>
+          </view>
+        </block>
+        <view class="empty-state" wx:if="{{insightHistoryList.length === 0}}">
+          <text class="empty-state-text">暂无对话历史</text>
+        </view>
+      </scroll-view>
+    </view>
+  </view>
+
+  <!-- ========== 底部上传按钮 ========== -->
+  <view class="bottom-upload-bar">
+    <view class="bottom-upload-btn" bindtap="onGoUpload">
+      <image class="bottom-upload-icon" src="/icons/paper-clip.svg" mode="aspectFit"></image>
+      <text class="bottom-upload-text">上传资源</text>
+    </view>
+  </view>
+
+</view>

@@ -1,0 +1,255 @@
+/* upload.wxss - 上传资源页 */
+/* ============================================
+ * Skyline + WebView 双渲染模式兼容适配
+ * 
+ * 关键差异:
+ * 1. 盒模型: Skyline 默认 border-box, WebView 默认 content-box
+ *    → 所有容器显式设置 box-sizing: border-box
+ * 2. overflow: Skyline 对 overflow:hidden 支持有限
+ *    → 使用 border-radius 自然裁剪代替 overflow:hidden
+ * 3. display: WebView 中 <image>/<text> 默认 inline
+ *    → 使用 flex 容器包裹，避免依赖默认 display 值
+ * 4. gap: Skyline 早期版本不支持 flex gap
+ *    → 使用 margin 替代 gap 实现间距
+ * ============================================ */
+
+/* ========== 页面容器 ========== */
+.upload-page {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(180deg, #7785AC 0%, #5b2a86 100%);
+  box-sizing: border-box;
+}
+
+/* ========== 顶部导航区 ========== */
+.upload-header {
+  display: flex;
+  align-items: center;
+  padding: 20rpx 32rpx;
+  margin-bottom: 20rpx;
+  box-sizing: border-box;
+  flex-shrink: 0;
+}
+
+.upload-header-logo {
+  width: 56rpx;
+  height: 56rpx;
+  border-radius: 12rpx;
+  flex-shrink: 0;
+}
+
+.upload-header-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #fff;
+  margin-left: 16rpx;
+  line-height: 1;
+}
+
+/* ========== 主体区域 ========== */
+.upload-body {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 40rpx 40rpx;
+  box-sizing: border-box;
+  /* WebView 兼容: 防止 flex:1 + padding 导致溢出 */
+  min-height: 0;
+}
+
+/* ========== 圆角矩形卡片 ========== */
+.upload-card {
+  width: 100%;
+  height: 80%;
+  background: #ffffff;
+  border-radius: 36rpx;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 16rpx 48rpx rgba(0, 0, 0, 0.15);
+  /* Skyline 兼容: 移除 overflow:hidden，用 border-radius 自然约束子元素 */
+  position: relative;
+  box-sizing: border-box;
+  animation: slideUp 0.5s ease-out;
+}
+
+/* ========== 关闭按钮 ========== */
+.upload-card-close {
+  position: absolute;
+  top: 24rpx;
+  left: 24rpx;
+  width: 56rpx;
+  height: 56rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.05);
+  z-index: 10;
+  box-sizing: border-box;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+}
+
+.upload-card-close:active {
+  background: rgba(0, 0, 0, 0.1);
+  transform: scale(0.9);
+}
+
+.upload-card-close-icon {
+  width: 36rpx;
+  height: 36rpx;
+  flex-shrink: 0;
+}
+
+/* ========== 文字输入区 ========== */
+.upload-card-input-area {
+  flex: 1;
+  padding: 80rpx 36rpx 32rpx;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  /* WebView 兼容: 防止 flex:1 + padding 导致溢出 */
+  min-height: 0;
+}
+
+.upload-card-textarea {
+  flex: 1;
+  width: 100%;
+  font-size: 28rpx;
+  color: #333;
+  line-height: 1.6;
+  border: none;
+  outline: none;
+  background: transparent;
+  padding: 16rpx;
+  box-sizing: border-box;
+}
+
+.upload-card-textarea-placeholder {
+  color: #ccc;
+  font-size: 28rpx;
+}
+
+/* ========== 文件上传按钮区 ========== */
+.upload-file-area {
+  padding: 0 36rpx 16rpx;
+  box-sizing: border-box;
+  flex-shrink: 0;
+}
+
+.upload-file-btn {
+  display: flex;
+  align-items: center;
+  padding: 16rpx 24rpx;
+  border: 2rpx dashed #d0d0d0;
+  border-radius: 16rpx;
+  box-sizing: border-box;
+  transition: all 0.2s ease;
+}
+
+.upload-file-btn:active {
+  background: rgba(119, 133, 172, 0.05);
+  border-color: #7785AC;
+}
+
+.upload-file-icon {
+  width: 32rpx;
+  height: 32rpx;
+  margin-right: 12rpx;
+  flex-shrink: 0;
+}
+
+.upload-file-text {
+  font-size: 26rpx;
+  color: #999;
+  line-height: 1;
+}
+
+.upload-file-text-primary {
+  color: #7785AC;
+  font-weight: 500;
+}
+
+/* ========== 已选文件列表 ========== */
+.upload-file-list {
+  display: flex;
+  flex-wrap: wrap;
+  /* Skyline 兼容: gap 在 Skyline 部分版本不支持, 用负 margin + 子元素 margin 替代 */
+  margin: -6rpx;
+  padding: 0 36rpx 16rpx;
+  box-sizing: border-box;
+  flex-shrink: 0;
+}
+
+.upload-file-item {
+  display: flex;
+  align-items: center;
+  background: #f7f8fc;
+  border-radius: 12rpx;
+  padding: 10rpx 16rpx;
+  font-size: 24rpx;
+  color: #555;
+  max-width: 100%;
+  box-sizing: border-box;
+  flex-shrink: 0;
+  margin: 6rpx;
+}
+
+.upload-file-item-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 200rpx;
+  flex-shrink: 1;
+}
+
+.upload-file-item-remove {
+  width: 22rpx;
+  height: 22rpx;
+  margin-left: 8rpx;
+  padding: 4rpx;
+  flex-shrink: 0;
+  opacity: 0.6;
+  box-sizing: border-box;
+}
+
+/* ========== 发送按钮区 ========== */
+.upload-card-send-area {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 36rpx 36rpx;
+  box-sizing: border-box;
+  flex-shrink: 0;
+}
+
+.upload-card-send-btn {
+  width: 100%;
+  height: 90rpx;
+  background: linear-gradient(135deg, #7785AC 0%, #5b2a86 100%);
+  color: #ffffff;
+  font-size: 32rpx;
+  font-weight: 600;
+  border-radius: 20rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  letter-spacing: 4rpx;
+  box-shadow: 0 8rpx 24rpx rgba(119, 133, 172, 0.35);
+  box-sizing: border-box;
+  transition: all 0.2s ease;
+}
+
+.upload-card-send-btn:active {
+  transform: scale(0.97);
+  opacity: 0.9;
+}
+
+.upload-card-send-btn.disabled {
+  opacity: 0.5;
+  /* Skyline 兼容: 禁用状态下阻止点击穿透 */
+  pointer-events: none;
+}

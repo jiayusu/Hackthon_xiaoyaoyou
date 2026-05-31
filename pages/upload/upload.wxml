@@ -1,0 +1,64 @@
+<!-- upload.wxml - 上传资源页 -->
+<view class="upload-page" style="padding-top: {{statusBarHeight + 10}}px;">
+  <!-- 顶部 Logo + 标题 -->
+  <view class="upload-header">
+    <image class="upload-header-logo" src="/logo/logo.png" mode="aspectFit"></image>
+    <text class="upload-header-title">拾遗补阙</text>
+  </view>
+
+  <!-- 主体 -->
+  <view class="upload-body">
+    <!-- 圆角矩形卡片 -->
+    <view class="upload-card">
+      <!-- 关闭按钮 -->
+      <view class="upload-card-close" bindtap="onClose">
+        <image class="upload-card-close-icon" src="/icons/close.svg" mode="aspectFit"></image>
+      </view>
+
+      <!-- 文字输入区域 -->
+      <view class="upload-card-input-area">
+        <textarea
+          class="upload-card-textarea"
+          placeholder="请输入您的论文初稿、研究思路或任意文字内容…"
+          placeholder-class="upload-card-textarea-placeholder"
+          value="{{inputText}}"
+          bindinput="onTextInput"
+          auto-height="{{false}}"
+          maxlength="50000"
+        ></textarea>
+      </view>
+
+      <!-- 文件上传按钮 -->
+      <view class="upload-file-area">
+        <view class="upload-file-btn" bindtap="onChooseFile">
+          <image class="upload-file-icon" src="/icons/paper-clip.svg" mode="aspectFit"></image>
+          <text class="upload-file-text">点击上传 <text class="upload-file-text-primary">TXT / MD</text> 文件</text>
+        </view>
+      </view>
+
+      <!-- 已选文件列表 -->
+      <view class="upload-file-list" wx:if="{{uploadedFiles.length > 0}}">
+        <block wx:for="{{uploadedFiles}}" wx:key="index">
+          <view class="upload-file-item">
+            <text class="upload-file-item-name">{{item.name}}</text>
+            <image class="upload-file-item-remove" bindtap="onRemoveFile" data-index="{{index}}" src="/icons/close.svg" mode="aspectFit"></image>
+          </view>
+        </block>
+      </view>
+
+      <!-- 发送按钮 -->
+      <view class="upload-card-send-area">
+        <view class="upload-card-send-btn {{isSending ? 'disabled' : ''}}" bindtap="onSend">
+          发 送
+        </view>
+      </view>
+    </view>
+  </view>
+</view>
+
+<!-- 加载弹窗 -->
+<loading-modal
+  visible="{{showLoading}}"
+  progress="{{loadingProgress}}"
+  text="{{loadingText}}"
+></loading-modal>

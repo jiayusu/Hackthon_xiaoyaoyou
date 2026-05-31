@@ -1,0 +1,105 @@
+/* loading-modal.wxss */
+/* Skyline + WebView 双渲染模式兼容适配 */
+
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0);
+  opacity: 0;
+  /* Skyline 兼容: pointer-events 在 Skyline 中不支持，改用 wx:if 控制显隐 */
+  transition: opacity 0.3s ease;
+  box-sizing: border-box;
+}
+
+.loading-overlay.show {
+  opacity: 1;
+  background: rgba(0, 0, 0, 0.55);
+}
+
+.loading-container {
+  width: 520rpx;
+  background: #ffffff;
+  border-radius: 32rpx;
+  padding: 60rpx 48rpx 48rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 16rpx 48rpx rgba(0, 0, 0, 0.15);
+  box-sizing: border-box;
+  animation: slideUp 0.35s ease-out;
+}
+
+.loading-logo-wrapper {
+  width: 80rpx;
+  height: 80rpx;
+  margin-bottom: 24rpx;
+  box-sizing: border-box;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.loading-logo {
+  width: 100%;
+  height: 100%;
+  border-radius: 16rpx;
+}
+
+.loading-text {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 32rpx;
+  line-height: 1;
+}
+
+.loading-bar-container {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  margin-bottom: 16rpx;
+  box-sizing: border-box;
+}
+
+.loading-bar-track {
+  flex: 1;
+  height: 12rpx;
+  background: #f0f0f0;
+  border-radius: 6rpx;
+  /* Skyline 兼容: overflow:hidden 在 Skyline 中不支持，
+     使用 border-radius: inherit 配合子元素 border-radius 实现视觉裁剪 */
+  box-sizing: border-box;
+}
+
+.loading-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #7785AC, #9ac6c5, #a5e6ba);
+  border-radius: 6rpx;
+  position: relative;
+  box-sizing: border-box;
+  transition: width 0.3s ease;
+}
+
+.loading-bar-glow {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 30rpx;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 6rpx;
+  box-sizing: border-box;
+}
+
+.loading-stage {
+  font-size: 24rpx;
+  color: #7785AC;
+  margin-top: 8rpx;
+  text-align: center;
+  line-height: 1;
+}

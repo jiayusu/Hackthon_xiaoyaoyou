@@ -1,0 +1,18 @@
+<!-- loading-modal.wxml -->
+<view class="loading-overlay {{visible ? 'show' : ''}}" wx:if="{{visible}}">
+  <view class="loading-container">
+    <view class="loading-logo-wrapper">
+      <image class="loading-logo" src="/logo/logo.png" mode="aspectFit"></image>
+    </view>
+    <text class="loading-text">{{text}}</text>
+    <view class="loading-bar-container">
+      <view class="loading-bar-track">
+        <view class="loading-bar-fill" style="width: {{displayProgress}}%;">
+          <view class="loading-bar-glow"></view>
+        </view>
+      </view>
+
+    </view>
+    <text class="loading-stage">{{stageText}}</text>
+  </view>
+</view>
