@@ -10,11 +10,9 @@
 
 ## 📺 产品演示
 
-> 点击下方预览图下载观看完整演示视频。
+https://github.com/user-attachments/assets/6af1cef3-89e0-432c-8af4-5780c9a01c18
 
-[![产品演示视频](logo/logo.png)](拾遗补阙_小程序.mp4)
-
-📥 [下载演示视频](拾遗补阙_小程序.mp4)
+<video src="https://raw.githubusercontent.com/jiayusu/Hackthon_xiaoyaoyou/master/拾遗补阙_小程序.mp4" controls width="100%" poster="logo/logo.png"></video>
 
 ---
 
